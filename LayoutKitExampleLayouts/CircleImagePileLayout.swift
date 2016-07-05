@@ -13,12 +13,12 @@ import LayoutKit
 public class CircleImagePileLayout: StackLayout {
 
     public enum Mode {
-        case LeadingOnTop, TrailingOnTop
+        case leadingOnTop, trailingOnTop
     }
 
     public let mode: Mode
 
-    init(imageNames: [String], mode: Mode = .TrailingOnTop) {
+    init(imageNames: [String], mode: Mode = .trailingOnTop) {
         self.mode = mode
         let sublayouts: [Layout] = imageNames.map { imageName in
             return SizeLayout<UIImageView>(width: 50, height: 50, config: { imageView in
@@ -36,8 +36,14 @@ public class CircleImagePileLayout: StackLayout {
                    sublayouts: sublayouts)
     }
 
-    public override func makeView() -> UIView? {
-        return mode == .LeadingOnTop ? CircleImagePileView() : nil
+    public override func makeView(from recycler: ViewRecycler, configure: Bool) -> UIView? {
+        switch mode {
+        case .leadingOnTop:
+            let view: CircleImagePileView = recycler.makeView(tag: tag)
+            return view
+        case .trailingOnTop:
+            return nil
+        }
     }
 }
 

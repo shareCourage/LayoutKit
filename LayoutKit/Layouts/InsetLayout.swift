@@ -10,23 +10,29 @@ import CoreGraphics
 
 /**
  A layout that insets another layout.
-*/
-public class InsetLayout: PositioningLayout<View>, Layout {
+ */
+public class InsetLayout: BaseLayout<View>, Layout {
     
     public let insets: EdgeInsets
-    public let alignment: Alignment
     public let sublayout: Layout
 
-    public init(insets: EdgeInsets, alignment: Alignment = Alignment.fill, sublayout: Layout, config: (View -> Void)? = nil) {
+    public init(insets: EdgeInsets,
+                alignment: Alignment = Alignment.fill,
+                tag: Int = 0,
+                sublayout: Layout,
+                config: (View -> Void)? = nil) {
         self.insets = insets
-        self.alignment = alignment
         self.sublayout = sublayout
-        super.init(config: config)
+        super.init(alignment: alignment, flexibility: sublayout.flexibility, tag: tag, config: config)
     }
 
-    public convenience init(inset: CGFloat, alignment: Alignment = Alignment.fill, sublayout: Layout, config: (View -> Void)? = nil) {
+    public convenience init(inset: CGFloat,
+                            alignment: Alignment = Alignment.fill,
+                            tag: Int = 0,
+                            sublayout: Layout,
+                            config: (View -> Void)? = nil) {
         let insets = EdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
-        self.init(insets: insets, alignment: alignment, sublayout: sublayout, config: config)
+        self.init(insets: insets, alignment: alignment, tag: tag, sublayout: sublayout, config: config)
     }
 
     public func measurement(within maxSize: CGSize) -> LayoutMeasurement {
@@ -45,9 +51,5 @@ public class InsetLayout: PositioningLayout<View>, Layout {
             return measurement.arrangement(within: sublayoutRect)
         }
         return LayoutArrangement(layout: self, frame: frame, sublayouts: sublayouts)
-    }
-
-    public var flexibility: Flexibility {
-        return sublayout.flexibility
     }
 }
